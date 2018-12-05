@@ -43,6 +43,9 @@
 #include "app_trace.h"
 #include "bsp.h"
 #include "bsp_btn_ble.h"
+//private includes 
+#include "nrf_gpio.h"
+#include "nrf_delay.h"
 
 #define IS_SRVC_CHANGED_CHARACT_PRESENT  1                                          /**< Include or not the service_changed characteristic. if not enabled, the server's database cannot be changed for the lifetime of the device*/
 
@@ -74,6 +77,7 @@
 #define SEC_PARAM_MAX_KEY_SIZE           16                                         /**< Maximum encryption key size. */
 
 #define DEAD_BEEF                        0xDEADBEEF                                 /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
+
 
 static dm_application_instance_t        m_app_handle;                               /**< Application identifier allocated by device manager */
 
@@ -190,6 +194,10 @@ static void on_yys_evt(ble_yy_service_t     * p_yy_service,
  */
 static void services_init(void)
 {
+	nrf_gpio_cfg_output(5);
+	nrf_gpio_pin_toggle(5);
+	nrf_delay_ms(1000);
+	nrf_gpio_pin_toggle(5);
     /* YOUR_JOB: Add code to initialize the services used by the application.
     uint32_t                           err_code;
     ble_xxs_init_t                     xxs_init;
@@ -215,6 +223,10 @@ static void services_init(void)
     */
 }
 
+static void dht11_init(void)
+{
+	
+}
 
 /**@brief Function for handling the Connection Parameters Module.
  *
