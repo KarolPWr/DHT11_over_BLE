@@ -194,10 +194,7 @@ static void on_yys_evt(ble_yy_service_t     * p_yy_service,
  */
 static void services_init(void)
 {
-	nrf_gpio_cfg_output(5);
-	nrf_gpio_pin_toggle(5);
-	nrf_delay_ms(1000);
-	nrf_gpio_pin_toggle(5);
+
     /* YOUR_JOB: Add code to initialize the services used by the application.
     uint32_t                           err_code;
     ble_xxs_init_t                     xxs_init;
@@ -226,6 +223,15 @@ static void services_init(void)
 static void dht11_init(void)
 {
 	
+}
+
+/* Blink external LED connected on pin 5 of the board */
+static void startup_blink(void)
+{
+	nrf_gpio_cfg_output(5);
+	nrf_gpio_pin_toggle(5);
+	nrf_delay_ms(1000);
+	nrf_gpio_pin_toggle(5);
 }
 
 /**@brief Function for handling the Connection Parameters Module.
@@ -588,6 +594,7 @@ int main(void)
     bool erase_bonds;
 
     // Initialize.
+	  startup_blink();
     timers_init();
     buttons_leds_init(&erase_bonds);
     ble_stack_init();
