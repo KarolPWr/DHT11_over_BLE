@@ -46,6 +46,7 @@
 //private includes 
 #include "nrf_gpio.h"
 #include "nrf_delay.h"
+#include "dummy_ble_srv.h"
 
 #define IS_SRVC_CHANGED_CHARACT_PRESENT  1                                          /**< Include or not the service_changed characteristic. if not enabled, the server's database cannot be changed for the lifetime of the device*/
 
@@ -87,6 +88,8 @@ static uint16_t                          m_conn_handle = BLE_CONN_HANDLE_INVALID
 static ble_xx_service_t                     m_xxs;
 static ble_yy_service_t                     m_yys;
 */
+
+//static ble_test_service_t      m_test;
 
 // YOUR_JOB: Use UUIDs for service(s) used in your application.
 static ble_uuid_t m_adv_uuids[] = {{BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE}}; /**< Universally unique service identifiers. */
