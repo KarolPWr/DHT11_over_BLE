@@ -11,51 +11,51 @@
 #define LBS_UUID_LED_CHAR 0x1525
 #define LBS_UUID_BUTTON_CHAR 0x1524
 
-// Forward declaration of the ble_lbs_t type. 
-typedef struct ble_lbs_s ble_lbs_t;
+// Forward declaration of the ble_dht_t type. 
+typedef struct ble_dht_s ble_dht_t;
 
-typedef void (*ble_lbs_led_write_handler_t) (ble_lbs_t * p_lbs, uint8_t new_state);
+typedef void (*ble_dht_write_handler_t) (ble_dht_t * p_dht, uint8_t new_state);
 
 typedef struct
 {
-    ble_lbs_led_write_handler_t led_write_handler;                    /**< Event handler to be called when LED characteristic is written. */
-} ble_lbs_init_t;
+    ble_dht_write_handler_t dht_write_handler;                    /**< Event handler to be called when LED characteristic is written. */
+} ble_dht_init_t;
 
 /**@brief LED Button Service structure. This contains various status information for the service. */
-typedef struct ble_lbs_s
+typedef struct ble_dht_s
 {
     uint16_t                    service_handle;
-    ble_gatts_char_handles_t    led_char_handles;
-    ble_gatts_char_handles_t    button_char_handles;
+    ble_gatts_char_handles_t    dht_handles;
+    //ble_gatts_char_handles_t    button_char_handles;
     uint8_t                     uuid_type;
     uint16_t                    conn_handle;
-    ble_lbs_led_write_handler_t led_write_handler;
-} ble_lbs_t;
+    ble_dht_write_handler_t dht_write_handler;
+} ble_dht_t;
 
 /**@brief Function for initializing the LED Button Service.
  *
- * @param[out]  p_lbs       LED Button Service structure. This structure will have to be supplied by
+ * @param[out]  p_dht       DHT structure. This structure will have to be supplied by
  *                          the application. It will be initialized by this function, and will later
  *                          be used to identify this particular service instance.
- * @param[in]   p_lbs_init  Information needed to initialize the service.
+ * @param[in]   p_dht_init  Information needed to initialize the service.
  *
  * @return      NRF_SUCCESS on successful initialization of service, otherwise an error code.
  */
-uint32_t ble_lbs_init(ble_lbs_t * p_lbs, const ble_lbs_init_t * p_lbs_init);
+uint32_t ble_dht_init(ble_dht_t * p_dht, const ble_dht_init_t * p_dht_init);
 
 /**@brief Function for handling the Application's BLE Stack events.
  *
  * @details Handles all events from the BLE stack of interest to the LED Button Service.
  *
  *
- * @param[in]   p_lbs      LED Button Service structure.
+ * @param[in]   p_dht      LED Button Service structure.
  * @param[in]   p_ble_evt  Event received from the BLE stack.
  */
-void ble_lbs_on_ble_evt(ble_lbs_t * p_lbs, ble_evt_t * p_ble_evt);
+void ble_dht_on_ble_evt(ble_dht_t * p_dht, ble_evt_t * p_ble_evt);
 
-/**@brief Function for sending a button state notification.
+/**@brief Function for sending a sensor reading notification.
  */
-uint32_t ble_lbs_on_button_change(ble_lbs_t * p_lbs, uint8_t button_state);
+uint32_t ble_dht_on_reading_change(ble_dht_t * p_dht, uint8_t dht_state);
 
 
 
