@@ -32,29 +32,29 @@ static void on_write(ble_dht_t * p_dht, ble_evt_t * p_ble_evt)
 {
     ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
     
-    if ((p_evt_write->handle == p_dht->led_char_handles.value_handle) &&
+    if ((p_evt_write->handle == p_dht->dht_char_handles.value_handle) &&
         (p_evt_write->len == 1) &&
-        (p_lbs->led_write_handler != NULL))
+        (p_dht->dht_write_handler != NULL))
     {
-        p_lbs->led_write_handler(p_lbs, p_evt_write->data[0]);
+        p_dht->dht_write_handler(p_dht, p_evt_write->data[0]);
     }
 }
 
 
-void ble_lbs_on_ble_evt(ble_lbs_t * p_lbs, ble_evt_t * p_ble_evt)
+void ble_dht_on_ble_evt(ble_dht_t * p_dht, ble_evt_t * p_ble_evt)
 {
     switch (p_ble_evt->header.evt_id)
     {
         case BLE_GAP_EVT_CONNECTED:
-            on_connect(p_lbs, p_ble_evt);
+            on_connect(p_dht, p_ble_evt);
             break;
             
         case BLE_GAP_EVT_DISCONNECTED:
-            on_disconnect(p_lbs, p_ble_evt);
+            on_disconnect(p_dht, p_ble_evt);
             break;
             
         case BLE_GATTS_EVT_WRITE:
-            on_write(p_lbs, p_ble_evt);
+            on_write(p_dht, p_ble_evt);
             break;
             
         default:

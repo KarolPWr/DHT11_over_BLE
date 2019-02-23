@@ -18,10 +18,10 @@ typedef void (*ble_dht_write_handler_t) (ble_dht_t * p_dht, uint8_t new_state);
 
 typedef struct
 {
-    ble_dht_write_handler_t dht_write_handler;                    /**< Event handler to be called when LED characteristic is written. */
+    ble_dht_write_handler_t dht_write_handler;                    /**< Event handler to be called when dht characteristic is written. */
 } ble_dht_init_t;
 
-/**@brief LED Button Service structure. This contains various status information for the service. */
+/**@brief DHT Service structure. This contains various status information for the service. */
 typedef struct ble_dht_s
 {
     uint16_t                    service_handle;
