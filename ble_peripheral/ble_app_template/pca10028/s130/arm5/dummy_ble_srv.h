@@ -112,21 +112,6 @@ uint32_t ble_dht_init(ble_dht_t * p_dht, const ble_dht_init_t * p_dht_init);
  */
 void ble_dht_on_ble_evt(ble_dht_t * p_dht, ble_evt_t * p_ble_evt);
 
-/**@brief Function for updating the battery level.
- *
- * @details The application calls this function after having performed a battery measurement. If
- *          notification has been enabled, the battery level characteristic is sent to the client.
- *
- * @note For the requirements in the BAS specification to be fulfilled,
- *       this function must be called upon reconnection if the battery level has changed
- *       while the service has been disconnected from a bonded client.
- *
- * @param[in]   p_dht          Battery Service structure.
- * @param[in]   battery_level  New battery measurement value (in percent of full capacity).
- *
- * @return      NRF_SUCCESS on success, otherwise an error code.
- */
-
 #endif // ble_dht_H__
 
 /** @} */

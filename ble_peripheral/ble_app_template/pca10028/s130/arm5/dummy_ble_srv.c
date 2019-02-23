@@ -24,6 +24,7 @@
 
 #define INVALID_BATTERY_LEVEL 255
 
+#if 0
 
 /**@brief Function for handling the Connect event.
  *
@@ -227,7 +228,7 @@ static uint32_t battery_level_char_add(BLE_DHT_t * p_dht, const BLE_DHT_init_t *
     return NRF_SUCCESS;
 }
 
-
+#endif
 uint32_t BLE_DHT_init(BLE_DHT_t * p_dht, const BLE_DHT_init_t * p_dht_init)
 {
     if (p_dht == NULL || p_dht_init == NULL)
@@ -254,5 +255,5 @@ uint32_t BLE_DHT_init(BLE_DHT_t * p_dht, const BLE_DHT_init_t * p_dht_init)
     }
 
     // Add battery level characteristic
-    return battery_level_char_add(p_dht, p_dht_init);
+    return NRF_SUCCESS
 }
