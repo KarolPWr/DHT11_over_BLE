@@ -240,19 +240,26 @@ uint32_t BLE_DHT_init(BLE_DHT_t * p_dht, const BLE_DHT_init_t * p_dht_init)
     ble_uuid_t ble_uuid;
 
     // Initialize service structure
-    p_dht->evt_handler               = p_dht_init->evt_handler;
     p_dht->conn_handle               = BLE_CONN_HANDLE_INVALID;
-    p_dht->is_notification_supported = p_dht_init->support_notification;
-    p_dht->battery_level_last        = INVALID_BATTERY_LEVEL;
+		p_dht->dht_write_handler         = p_dht_init->dht_write_handler;
 
-    // Add service
-    BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_BATTERY_SERVICE);
-
-    err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY, &ble_uuid, &p_dht->service_handle);
-    if (err_code != NRF_SUCCESS)
-    {
-        return err_code;
-    }
+    // Add service (instruction)
+    ble_uuid128_t base_uuid = LBS_UUID_BASE;
+    err_code = sd_ble_uuid_vs_add(&base_uuid, &p_lbs->uuid_type);
+		if (err_code != NRF_SUCCESS)
+		{
+		 return err_code;
+		}
+		
+		// setup uuid for dht service (instruction)
+		ble_uuid.type = p_lbs->uuid_type;
+		ble_uuid.uuid = LBS_UUID_SERVICE;
+		err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY, &ble_uuid,
+		&p_lbs->service_handle);
+		if (err_code != NRF_SUCCESS)
+		{
+		return err_code;
+		}
 
     // Add battery level characteristic
     return NRF_SUCCESS
