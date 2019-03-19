@@ -122,7 +122,7 @@ void BLE_DHT_on_ble_evt(BLE_DHT_t * p_dht, ble_evt_t * p_ble_evt)
  *
  * @return      NRF_SUCCESS on success, otherwise an error code.
  */
-static uint32_t battery_level_char_add(BLE_DHT_t * p_dht, const BLE_DHT_init_t * p_dht_init)
+static uint32_t dht_char_add(BLE_DHT_t * p_dht, const BLE_DHT_init_t * p_dht_init)
 {
     uint32_t            err_code;
     ble_gatts_char_md_t char_md;
@@ -135,16 +135,17 @@ static uint32_t battery_level_char_add(BLE_DHT_t * p_dht, const BLE_DHT_init_t *
     uint8_t             init_len;
 
     // Add Battery Level characteristic
-    if (p_dht->is_notification_supported)
-    {
+// deleted if statement (instruction)
         memset(&cccd_md, 0, sizeof(cccd_md));
 
         // According to BAS_SPEC_V10, the read operation on cccd should be possible without
         // authentication.
-        BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
+				BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
+        BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
+	
         cccd_md.write_perm = p_dht_init->battery_level_char_attr_md.cccd_write_perm;
         cccd_md.vloc       = BLE_GATTS_VLOC_STACK;
-    }
+
 
     memset(&char_md, 0, sizeof(char_md));
 
@@ -159,6 +160,8 @@ static uint32_t battery_level_char_add(BLE_DHT_t * p_dht, const BLE_DHT_init_t *
     BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_BATTERY_LEVEL_CHAR);
 
     memset(&attr_md, 0, sizeof(attr_md));
+		BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&attr_md.write_perm);
 
     attr_md.read_perm  = p_dht_init->battery_level_char_attr_md.read_perm;
     attr_md.write_perm = p_dht_init->battery_level_char_attr_md.write_perm;
@@ -185,45 +188,8 @@ static uint32_t battery_level_char_add(BLE_DHT_t * p_dht, const BLE_DHT_init_t *
     {
         return err_code;
     }
+    
 
-    if (p_dht_init->p_report_ref != NULL)
-    {
-        // Add Report Reference descriptor
-        BLE_UUID_BLE_ASSIGN(ble_uuid, BLE_UUID_REPORT_REF_DESCR);
-
-        memset(&attr_md, 0, sizeof(attr_md));
-
-        attr_md.read_perm = p_dht_init->battery_level_report_read_perm;
-        BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&attr_md.write_perm);
-
-        attr_md.vloc    = BLE_GATTS_VLOC_STACK;
-        attr_md.rd_auth = 0;
-        attr_md.wr_auth = 0;
-        attr_md.vlen    = 0;
-        
-        init_len = ble_srv_report_ref_encode(encoded_report_ref, p_dht_init->p_report_ref);
-        
-        memset(&attr_char_value, 0, sizeof(attr_char_value));
-
-        attr_char_value.p_uuid    = &ble_uuid;
-        attr_char_value.p_attr_md = &attr_md;
-        attr_char_value.init_len  = init_len;
-        attr_char_value.init_offs = 0;
-        attr_char_value.max_len   = attr_char_value.init_len;
-        attr_char_value.p_value   = encoded_report_ref;
-
-        err_code = sd_ble_gatts_descriptor_add(p_dht->battery_level_handles.value_handle,
-                                               &attr_char_value,
-                                               &p_dht->report_ref_handle);
-        if (err_code != NRF_SUCCESS)
-        {
-            return err_code;
-        }
-    }
-    else
-    {
-        p_dht->report_ref_handle = BLE_GATT_HANDLE_INVALID;
-    }
 
     return NRF_SUCCESS;
 }
@@ -244,7 +210,7 @@ uint32_t BLE_DHT_init(BLE_DHT_t * p_dht, const BLE_DHT_init_t * p_dht_init)
 		p_dht->dht_write_handler         = p_dht_init->dht_write_handler;
 
     // Add service (instruction)
-    ble_uuid128_t base_uuid = LBS_UUID_BASE;
+    ble_uuid128_t base_uuid = DHT_UUID_BASE;
     err_code = sd_ble_uuid_vs_add(&base_uuid, &p_lbs->uuid_type);
 		if (err_code != NRF_SUCCESS)
 		{
@@ -253,7 +219,7 @@ uint32_t BLE_DHT_init(BLE_DHT_t * p_dht, const BLE_DHT_init_t * p_dht_init)
 		
 		// setup uuid for dht service (instruction)
 		ble_uuid.type = p_lbs->uuid_type;
-		ble_uuid.uuid = LBS_UUID_SERVICE;
+		ble_uuid.uuid = DHT_UUID_SERVICE;
 		err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY, &ble_uuid,
 		&p_lbs->service_handle);
 		if (err_code != NRF_SUCCESS)
